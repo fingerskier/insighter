@@ -18,6 +18,7 @@ function beep(context) {
   oscillator.stop(context.currentTime + 0.1)
 }
 
+
 function startBeeping(cadenceRef, activeRef) {
   const context = new (window.AudioContext || window.webkitAudioContext)()
   
@@ -35,75 +36,81 @@ function startBeeping(cadenceRef, activeRef) {
   scheduleNextBeep()
 }
 
+
 export default function Cadence() {
   const {
+    active,
+    setActive,
     cadence,
     reset,
     setRate,
     target,
     setTarget,
   } = useCadence()
-
-  const [active, setActive] = useState(false)
+  
   const [heart, setHeart] = useState()
   
-  // Refs to store current cadence and active state
   const cadenceRef = useRef(cadence)
   const activeRef = useRef(active)
   
   let T
-
+  
+  
   const handleHeartRate = e => {
     const newVal = +e.detail
     if (newVal) {
       setHeart(newVal)
     }
   }
-
+  
+  
   useEffect(() => {
     window.addEventListener(K.Event.HeartRate, handleHeartRate)
+    
     return () => window.removeEventListener(K.Event.HeartRate, handleHeartRate)
   }, [])
-
+  
+  
   useEffect(() => {
     setRate(heart)
   }, [heart])
-
+  
+  
   useEffect(() => {
-    cadenceRef.current = cadence // Keep cadence ref updated
+    cadenceRef.current = cadence
   }, [cadence])
-
+  
+  
   useEffect(() => {
-    activeRef.current = active // Keep active ref updated
-
+    activeRef.current = active
+    
     if (active) {
-      startBeeping(cadenceRef, activeRef) // Start beeping without restarting on cadence change
+      startBeeping(cadenceRef, activeRef)
     } else {
-      reset() // Reset cadence if not active
+      reset()
     }
-
+    
     return () => clearInterval(T)
   }, [active])
-
-  return (
-    <div>
-      <button onClick={() => setActive(!active)}>
-        {active ? 'Stop' : 'Start'}
-      </button>
-      <br />
-      Target Heart-Rate
-      <br />
-      {target}
-      <br />
-      <input
-        max={180}
-        min={50}
-        type="range"
-        value={target}
-        onChange={e => setTarget(+e.target.value)} 
-      />
-      <br />
-      <h1>{Math.round(cadence)}</h1>
-    </div>
-  )
+  
+  
+  return <div className='cadence'>
+    <button onClick={() => setActive(!active)}>
+      {active ? 'Stop' : 'Start'}
+    </button>
+    <br />
+    Target Heart-Rate
+    <br />
+    {target}
+    <br />
+    <input
+      max={180}
+      min={50}
+      type="range"
+      value={target}
+      onChange={e => setTarget(+e.target.value)} 
+    />
+    <br />
+    <h1>{Math.round(cadence)}</h1>
+  </div>
 }

@@ -8,7 +8,7 @@ import heartIcon from '../img/heart.png'
 const dataLimit = 100
 
 
-export default function BLEComponent() {
+export default function HeartRateMonitor() {
   const [lowThreshold] = useLocalStorage(K.Key.HeartLow, 50)
   const [highThreshold] = useLocalStorage(K.Key.HeartHigh, 180)
   

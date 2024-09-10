@@ -9,22 +9,25 @@ export default function useCadence(
   minimum=50,
   maximum=200,
 ) {
+  const [active, setActive] = useState(false)
+  const [cadence, setCadence] = useState(100)
   const [rate, setRate] = useState(100)
   const [target, setTarget] = useState(100)
-  const [cadence, setCadence] = useState(100)
   
   let pid, T
-
-
+  
+  
   const reset = () => {
     setCadence(100)
+    clearInterval(T)
   }
   
   
   useEffect(() => {
-    if (!target) return
-    
     clearInterval(T)
+    
+    if (!(active && rate && target)) return
+    
     pid = new PIDController(0.5, 0.1, 0.05, target)
     
     T = setInterval(() => {
@@ -38,10 +41,12 @@ export default function useCadence(
     }, interval)
     
     return () => clearInterval(T)
-  }, [rate, target])
+  }, [active, rate, target])
   
   
   return {
+    active,
+    setActive,
     cadence,
     rate,
     reset,

@@ -8,33 +8,35 @@ export default function Settings() {
   
   
   return <div className='settings container'>
-    <label htmlFor="">
+    <label htmlFor="lowThresholdSetting">
       Low Heart-Rate
-      
-      <input
-        type="range"
-        min="10"
-        max="220"
-        value={lowThreshold}
-        onChange={e => setLowThreshold(e.target.value)}
-      />
-      
-      {lowThreshold}
     </label>
-
+    
+    <input
+      id="lowThresholdSetting"
+      type="range"
+      min="70"
+      max="150"
+      value={lowThreshold}
+      onChange={e => setLowThreshold(e.target.value)}
+    />
+    
+    {lowThreshold}
+    
     <br />
-
-    <label htmlFor="">
+    
+    <label htmlFor="highThresholdSetting">
       High Heart-Rate
-      
-      <input
-        type="range"
-        min="10"
-        max="220"
-        value={highThreshold}
-        onChange={e => setHighThreshold(e.target.value)}
-      />
     </label>
+    
+    <input
+      id="highThresholdSetting"
+      type="range"
+      min="100"
+      max="180"
+      value={highThreshold}
+      onChange={e => setHighThreshold(e.target.value)}
+    />
     
     {highThreshold}
   </div>

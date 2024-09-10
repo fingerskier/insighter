@@ -43,6 +43,11 @@ h1, h2 {
 }
 
 
+.cadence input[type="range"] {
+  min-width: 33vw;
+}
+
+
 .chart.container {
   position: relative;
   display: block;
@@ -120,6 +125,11 @@ h1, h2 {
   align-items: center;
   margin: 0;
   max-width: 50%;
+}
+
+
+.settings input[type="range"] {
+  min-width: 33vw;
 }
 
 
