@@ -32,12 +32,10 @@ export default function HeartRateMonitor() {
     
     if (heartRate > highThreshold) {
       setTextMod('high')
-      // vibrate quickly
-      navigator.vibrate([66, 100, 66])
+      navigator.vibrate([66, 100, 66]) // vibrate quickly
     } else if (heartRate < lowThreshold) {
       setTextMod('low')
-      // vibrate slowly
-      navigator.vibrate([666, 100, 666])
+      navigator.vibrate([666, 100, 666]) // vibrate slowly
     } else {
       setTextMod('')
     }

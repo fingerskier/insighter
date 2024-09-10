@@ -8,6 +8,7 @@ const K = {
   Key: {
     HeartHigh: 'heart-high-threshold',
     HeartLow: 'heart-low-threshold',
+    PriorDevice: 'prior-device',
   }
 }
 

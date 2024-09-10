@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import K from '../constants'
+import useLocalStorage from './useLocalStorage'
 
 
 const defaultFilters = { services: ['heart_rate', 'battery_service'] }
@@ -8,19 +9,33 @@ let device, server
 
 
 export default function useMageneHRM() {
+  const [priorDevice, setPriorDevice] = useLocalStorage(K.Key.PriorDevice, null)
+  
   const [connected, setConnected] = useState(false)
   const [heartRate, setHeartRate] = useState()
   const [batteryLevel, setBatteryLevel] = useState()
   
+  
   const connect = async () => {
     try {
-      device = await navigator.bluetooth.requestDevice({
-        acceptAllDevices: true,
-        optionalServices: [0x180D, 0x180F],
-        // filters: [defaultFilters],
-      })
+      let filters
+      
+      if (priorDevice?.length) {
+        filters = { 
+          filters: [{name: priorDevice}]
+        }
+      } else {
+        filters = {
+          acceptAllDevices: true,
+          optionalServices: [0x180D, 0x180F],
+        }
+      }
+      
+      device = await navigator.bluetooth.requestDevice(filters)
       
       server = await device.gatt.connect()
+      
+      setPriorDevice(device.name)
       
       device.addEventListener('gattserverdisconnected', () => {
         setConnected(false)
@@ -52,10 +67,12 @@ export default function useMageneHRM() {
     }
   }
   
+  
   const disconnect = async () => {
     if (device && device.gatt.connected) {
       await device.gatt.disconnect()
       setConnected(false)
+      setPriorDevice(null)
     }
   }
   
