@@ -20,22 +20,22 @@ export default function useMageneHRM() {
     try {
       let filters
       
-      if (priorDevice?.length) {
-        filters = { 
-          filters: [{name: priorDevice}]
-        }
-      } else {
+      // if (priorDevice?.length) {
+      //   filters = { 
+      //     filters: [{name: priorDevice}]
+      //   }
+      // } else {
         filters = {
           acceptAllDevices: true,
           optionalServices: [0x180D, 0x180F],
         }
-      }
+      // }
       
       device = await navigator.bluetooth.requestDevice(filters)
       
       server = await device.gatt.connect()
       
-      setPriorDevice(device.name)
+      // setPriorDevice(device?.name)
       
       device.addEventListener('gattserverdisconnected', () => {
         setConnected(false)
