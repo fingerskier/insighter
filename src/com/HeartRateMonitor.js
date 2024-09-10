@@ -64,13 +64,6 @@ export default function BLEComponent() {
       <button onClick={connect}>Connect HRM</button>
     }
     
-    <input
-      min={lowThreshold}
-      max={highThreshold}
-      type="range"
-      defaultValue={heartRate}
-    />
-    
     {connected && <h3>Battery {batteryLevel}%</h3>}
   </div>
 }

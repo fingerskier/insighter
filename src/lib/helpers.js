@@ -1,3 +1,9 @@
+export function clamp(value, min, max) {
+  console.log(value, min, max)
+  return Math.min(Math.max(+value, min), max)
+}
+
+
 export function roundTo(value, digits=2) {
   let result = Math.round(value * 10**digits) / 10**digits
   
