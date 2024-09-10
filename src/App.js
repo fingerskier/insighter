@@ -1,3 +1,4 @@
+import Cadence from './com/Cadence'
 import Chart from './com/Chart'
 import HeartRateMonitor from './com/HeartRateMonitor'
 import Location from './com/Location'
@@ -12,6 +13,8 @@ export default function App() {
     <Location />
     
     <HeartRateMonitor />
+    
+    <Cadence />
     
     <Chart />
     

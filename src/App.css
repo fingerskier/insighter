@@ -1,6 +1,6 @@
 * {
   background-color: black;
-  color: white;
+  color: rgb(220, 213, 200);
   text-align: center;
 }
 
@@ -22,7 +22,7 @@ button {
 
 
 div {
-  border: thin outset #80f;
+  border: thin outset rgb(85, 0, 255);
   border-radius: 1rem;
 }
 
@@ -76,7 +76,7 @@ h1, h2 {
   transform: translate(-50%);
   border-width: thin;
   border-style: dotted;
-  border-color: pink;
+  border-color: rgb(255, 208, 192);
   font-size: 5rem;
 }
 
