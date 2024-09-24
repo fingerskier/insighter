@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import Cadence from './Cadence'
 import K from '../constants'
 import useLocalStorage from '../hook/useLocalStorage'
 import useMageneHRM from '../hook/useMageneHRM'
@@ -55,6 +56,8 @@ export default function HeartRateMonitor() {
           <img src={heartIcon} alt="" height={64} />
           <span className={`text ${textMod}`}> {heartRate} </span>
         </div>
+        
+        <Cadence value={heartRate} />
         
         <button onClick={disconnect}>Disconnect hRM</button>
       </>

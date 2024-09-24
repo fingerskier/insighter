@@ -6,8 +6,10 @@ const K = {
   },
   
   Key: {
+    CadenceTarget: 'cadence-target',
     HeartHigh: 'heart-high-threshold',
     HeartLow: 'heart-low-threshold',
+    HeartTarget: 'heart-target',
     PriorDevice: 'prior-device',
   }
 }

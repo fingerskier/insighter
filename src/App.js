@@ -14,8 +14,6 @@ export default function App() {
     
     <HeartRateMonitor />
     
-    <Cadence />
-    
     <Chart />
     
     <Wiggle />

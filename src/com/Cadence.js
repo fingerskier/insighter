@@ -1,116 +1,73 @@
-import {useEffect, useState, useRef} from 'react'
-import useCadence from '../hook/useCadence'
+import { useEffect, useState } from 'react'
 import K from '../constants'
+import useLocalStorage from '../hook/useLocalStorage'
+import useTimer from '../hook/useTimer'
+import {clamp} from '../lib/helpers'
+
+
+const audioContext = new (window.AudioContext || window.webkitAudioContext)()
 
 
 function beep(context) {
   const oscillator = context.createOscillator()
   const gainNode = context.createGain()
-  
+
   oscillator.connect(gainNode)
   gainNode.connect(context.destination)
-  
+
   oscillator.type = 'sine'
   oscillator.frequency.setValueAtTime(440, context.currentTime)
   oscillator.start()
-  
+
   gainNode.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.1)
   oscillator.stop(context.currentTime + 0.1)
 }
 
+const msToBPM = (ms)=>Math.round(60000 / ms)
 
-function startBeeping(cadenceRef, activeRef) {
-  const context = new (window.AudioContext || window.webkitAudioContext)()
+
+export default function Cadence({
+  maximum = 180,
+  minimum = 50,
+  value,
+}) {
+  const [target, setTarget] = useLocalStorage(K.Key.HeartTarget, value)
+  const [cadence, setCadence] = useState(1000)
+  const [duration, setDuration] = useTimer((elapsed) => {
+    beep(audioContext)
+  }, cadence)
   
-  function scheduleNextBeep() {
-    if (!activeRef.current) return // Stop beeping if not active
-
-    beep(context)
-
-    // Get cadence dynamically from the ref
-    const interval = 60 / cadenceRef.current * 1000
+  
+  useEffect(() => {
+    if (!(target && value)) return
     
-    setTimeout(scheduleNextBeep, interval)
-  }
-
-  scheduleNextBeep()
-}
-
-
-export default function Cadence() {
-  const {
-    active,
-    setActive,
-    cadence,
-    reset,
-    setRate,
-    target,
-    setTarget,
-  } = useCadence()
-  
-  const [heart, setHeart] = useState()
-  
-  const cadenceRef = useRef(cadence)
-  const activeRef = useRef(active)
-  
-  let T
-  
-  
-  const handleHeartRate = e => {
-    const newVal = +e.detail
-    if (newVal) {
-      setHeart(newVal)
-    }
-  }
-  
-  
-  useEffect(() => {
-    window.addEventListener(K.Event.HeartRate, handleHeartRate)
+    const diff = (target - value) / 5
+    const newCadence = cadence - diff
     
-    return () => window.removeEventListener(K.Event.HeartRate, handleHeartRate)
-  }, [])
+    setCadence(newCadence)
+  }, [target, value])
   
   
   useEffect(() => {
-    setRate(heart)
-  }, [heart])
-  
-  
-  useEffect(() => {
-    cadenceRef.current = cadence
+    if (!cadence) return
+    
+    setDuration(cadence)
   }, [cadence])
   
   
-  useEffect(() => {
-    activeRef.current = active
-    
-    if (active) {
-      startBeeping(cadenceRef, activeRef)
-    } else {
-      reset()
-    }
-    
-    return () => clearInterval(T)
-  }, [active])
-  
-  
-  return <div className='cadence'>
-    <button onClick={() => setActive(!active)}>
-      {active ? 'Stop' : 'Start'}
-    </button>
-    <br />
-    Target Heart-Rate
-    <br />
-    {target}
-    <br />
-    <input
-      max={180}
-      min={50}
-      type="range"
-      value={target}
-      onChange={e => setTarget(+e.target.value)} 
-    />
-    <br />
-    <h1>{Math.round(cadence)}</h1>
-  </div>
+  return (
+    <div>
+      Target:
+      <input
+        max={maximum}
+        min={minimum}
+        type="range"
+        value={target}
+        onChange={(e) => setTarget(parseFloat(e.target.value))}
+      />
+      {target}
+      <br />
+      Cadence: {msToBPM(duration)}
+    </div>
+  )
 }
