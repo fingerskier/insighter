@@ -12,6 +12,7 @@ const dataLimit = 100
 export default function HeartRateMonitor() {
   const [lowThreshold] = useLocalStorage(K.Key.HeartLow, 50)
   const [highThreshold] = useLocalStorage(K.Key.HeartHigh, 180)
+  const [useCadence, setUseCadence] = useLocalStorage(K.Key.HeartCadence, false)
   
   const { connect, disconnect, connected, heartRate, batteryLevel } = useMageneHRM()
   
@@ -56,15 +57,20 @@ export default function HeartRateMonitor() {
           <img src={heartIcon} alt="" height={64} />
           <span className={`text ${textMod}`}> {heartRate} </span>
         </div>
-        
-        <Cadence value={heartRate} />
+        <h3>Battery {batteryLevel}%</h3>
         
         <button onClick={disconnect}>Disconnect hRM</button>
+        
+        <button onClick={E=>setUseCadence(!useCadence)}>
+          {useCadence? 'Stop': 'Start'} Cadence
+        </button>
       </>
     :
       <button onClick={connect}>Connect HRM</button>
     }
     
-    {connected && <h3>Battery {batteryLevel}%</h3>}
+    {connected && useCadence?
+      <Cadence value={heartRate} />
+    : null }
   </div>
 }

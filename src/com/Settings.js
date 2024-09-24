@@ -8,6 +8,7 @@ export default function Settings() {
   
   
   return <div className='settings container'>
+{/* 
     <label htmlFor="lowThresholdSetting">
       Low Heart-Rate
     </label>
@@ -38,6 +39,7 @@ export default function Settings() {
       onChange={e => setHighThreshold(e.target.value)}
     />
     
-    {highThreshold}
+    {highThreshold} 
+*/}
   </div>
 }
