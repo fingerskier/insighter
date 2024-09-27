@@ -12,13 +12,13 @@ const dataLimit = 100
 export default function HeartRateMonitor() {
   const [lowThreshold] = useLocalStorage(K.Key.HeartLow, 50)
   const [highThreshold] = useLocalStorage(K.Key.HeartHigh, 180)
-  const [useCadence, setUseCadence] = useLocalStorage(K.Key.HeartCadence, false)
   
   const { connect, disconnect, connected, heartRate, batteryLevel } = useMageneHRM()
   
   const [classes, setClasses] = useState('')
   const [data, setData] = useState([])
   const [textMod, setTextMod] = useState('')
+  const [useCadence, setUseCadence] = useState(false)
   
   
   useEffect(() => {
@@ -43,9 +43,11 @@ export default function HeartRateMonitor() {
     }
     
     const newData = [...data, heartRate]
+    
     if (newData.length > dataLimit) {
       newData.shift()
     }
+    
     setData(newData)
   }, [heartRate])
   

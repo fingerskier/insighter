@@ -33,10 +33,5 @@ export default function useTimer(callback, initialDuration = 1000) {
   }, [duration, callback])
   
   
-  useEffect(() => {
-    console.log('timer duration', duration)
-  }, [duration])
-  
-  
   return [duration, setDuration]
 }

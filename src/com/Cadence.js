@@ -3,27 +3,12 @@ import K from '../constants'
 import useLocalStorage from '../hook/useLocalStorage'
 import useTimer from '../hook/useTimer'
 import {clamp} from '../lib/helpers'
+import useBeep from '../hook/useBeep'
 
-
-const audioContext = new (window.AudioContext || window.webkitAudioContext)()
-
-
-function beep(context) {
-  const oscillator = context.createOscillator()
-  const gainNode = context.createGain()
-
-  oscillator.connect(gainNode)
-  gainNode.connect(context.destination)
-
-  oscillator.type = 'sine'
-  oscillator.frequency.setValueAtTime(440, context.currentTime)
-  oscillator.start()
-
-  gainNode.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.1)
-  oscillator.stop(context.currentTime + 0.1)
-}
+const defaultCadence = 1000
 
 const msToBPM = (ms)=>Math.round(60000 / ms)
+
 
 
 export default function Cadence({
@@ -31,20 +16,35 @@ export default function Cadence({
   minimum = 50,
   value,
 }) {
+  const {
+    beep,
+    volume,
+    setVolume,
+    frequency,
+    setFrequency,
+  } = useBeep()
+  
   const [target, setTarget] = useLocalStorage(K.Key.HeartTarget, value)
-  const [cadence, setCadence] = useState(1000)
+  const [cadence, setCadence] = useLocalStorage(K.Key.HeartCadence, defaultCadence)
   const [duration, setDuration] = useTimer((elapsed) => {
-    beep(audioContext)
+    beep()
   }, cadence)
+  
+  let prevTime
   
   
   useEffect(() => {
     if (!(target && value)) return
     
-    const diff = (target - value) / 5
-    const newCadence = cadence - diff
+    const now = +Date.now()
+    const dT = now - prevTime
+    
+    const diff = (target - value)
+    const newCadence = clamp(cadence - diff, 50, 3000)
     
     setCadence(newCadence)
+    
+    prevTime = now
   }, [target, value])
   
   
@@ -66,8 +66,26 @@ export default function Cadence({
         onChange={(e) => setTarget(parseFloat(e.target.value))}
       />
       {target}
-      <br />
-      Cadence: {msToBPM(duration)}
+      
+      <div>
+        <button onClick={E=>setCadence(cadence+100)}>{msToBPM(duration+100)}</button>
+        <button onClick={E=>setCadence(defaultCadence)}>Reset {msToBPM(defaultCadence)}</button>
+        <button onClick={E=>setCadence(cadence-100)}>{msToBPM(duration-100)}</button>
+      </div>
+      
+      <div>
+        Volume: <input
+          type="range"
+          value={volume}
+          onChange={(e) => setVolume(parseFloat(e.target.value))}
+          min={0}
+          max={10}
+        /> {volume}
+      </div>
+        
+      <div>
+        Frequency: <input type="range" value={frequency} onChange={(e) => setFrequency(parseFloat(e.target.value))} />
+      </div>
     </div>
   )
 }
