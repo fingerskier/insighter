@@ -1,4 +1,4 @@
-import Cadence from './com/Cadence'
+import AutoCadence from './com/AutoCadence'
 import Chart from './com/Chart'
 import HeartRateMonitor from './com/HeartRateMonitor'
 import Location from './com/Location'

@@ -18,37 +18,37 @@ export default function useBeep() {
       latencyHint: 'playback',
     })
     audioContextRef.current = audioContext
-
+    
     // Create Master Gain Node
     const masterGainNode = audioContext.createGain()
     masterGainNode.gain.value = volume
     masterGainNode.connect(audioContext.destination)
     masterGainNodeRef.current = masterGainNode
-
+    
     return () => {
       // Cleanup on component unmount
       audioContext.close()
     }
   }, [])
-
+  
   // Update volume when it changes
   useEffect(() => {
     if (masterGainNodeRef.current) {
       masterGainNodeRef.current.gain.setValueAtTime(volume, audioContextRef.current.currentTime)
     }
   }, [volume])
-
+  
   // Beep function
   const beep = () => {
     if (!audioContextRef.current || !masterGainNodeRef.current) return
-
+    
     // Create Oscillator and Gain Node for beep
     const oscillator = audioContextRef.current.createOscillator()
     const gainNode = audioContextRef.current.createGain()
-
+    
     oscillator.type = 'sine'
     oscillator.frequency.setValueAtTime(frequency, audioContextRef.current.currentTime)
-
+    
     // Connect oscillator -> gain node -> master gain node
     oscillator.connect(gainNode)
     gainNode.connect(masterGainNodeRef.current)
@@ -57,7 +57,7 @@ export default function useBeep() {
     oscillator.start(audioContextRef.current.currentTime)
     gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContextRef.current.currentTime + 0.1)
     oscillator.stop(audioContextRef.current.currentTime + 0.1)
-
+    
     // Clean up oscillator when finished
     oscillator.onended = () => oscillator.disconnect()
   }
@@ -66,7 +66,7 @@ export default function useBeep() {
   const setFrequencyValue = (newFrequency) => {
     setFrequency(newFrequency)
   }
-
+  
   // Setter for volume
   const setVolumeValue = (newVolume) => {
     setVolume(newVolume)

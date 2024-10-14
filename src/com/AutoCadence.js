@@ -11,7 +11,7 @@ const msToBPM = (ms)=>Math.round(60000 / ms)
 
 
 
-export default function Cadence({
+export default function AutoCadence({
   maximum = 180,
   minimum = 50,
   value,
@@ -26,6 +26,7 @@ export default function Cadence({
   
   const [target, setTarget] = useLocalStorage(K.Key.HeartTarget, value)
   const [cadence, setCadence] = useLocalStorage(K.Key.HeartCadence, defaultCadence)
+  
   const [duration, setDuration] = useTimer((elapsed) => {
     beep()
   }, cadence)
@@ -55,6 +56,12 @@ export default function Cadence({
   }, [cadence])
   
   
+  useEffect(() => {
+    setFrequency(1.5*value)
+  }, [value])
+  
+  
+  
   return (
     <div>
       Target:
@@ -74,17 +81,15 @@ export default function Cadence({
       </div>
       
       <div>
-        Volume: <input
-          type="range"
-          value={volume}
-          onChange={(e) => setVolume(parseFloat(e.target.value))}
+        Volume:
+        <br />
+        <input type="range"
           min={0}
           max={10}
-        /> {volume}
-      </div>
-        
-      <div>
-        Frequency: <input type="range" value={frequency} onChange={(e) => setFrequency(parseFloat(e.target.value))} />
+          step={0.1}
+          value={volume}
+          onChange={(e) => setVolume(parseFloat(e.target.value))}
+        />
       </div>
     </div>
   )

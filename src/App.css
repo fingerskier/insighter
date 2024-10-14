@@ -16,7 +16,7 @@ body {
 
 button {
   border-radius: 1rem;
-  margin: 1rem;
+  margin: 0.1rem;
   padding: 1rem;
 }
 
@@ -45,6 +45,11 @@ h1, h2 {
 
 .cadence input[type="range"] {
   min-width: 33vw;
+}
+
+
+.container {
+  max-width: 40%;
 }
 
 
@@ -79,14 +84,10 @@ h1, h2 {
   height: 12rem;
   left: 50%;
   transform: translate(-50%);
-  border-width: thin;
-  border-style: dotted;
-  border-color: rgb(255, 208, 192);
   font-size: 5rem;
 }
 
 .heart.rate.highlight {
-  border-style: dashed;
 }
 
 .heart.rate > img {

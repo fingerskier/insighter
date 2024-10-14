@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import Cadence from './Cadence'
+import AutoCadence from './AutoCadence'
+import ManualCadence from './ManualCadence'
 import K from '../constants'
 import useLocalStorage from '../hook/useLocalStorage'
 import useMageneHRM from '../hook/useMageneHRM'
@@ -18,7 +19,9 @@ export default function HeartRateMonitor() {
   const [classes, setClasses] = useState('')
   const [data, setData] = useState([])
   const [textMod, setTextMod] = useState('')
-  const [useCadence, setUseCadence] = useState(false)
+  const [useAutoCadence, setUseAutoCadence] = useState(false)
+  const [useManualCadence, setUseManualCadence] = useState(false)
+  const [whichCadence, setWhichCadence] = useState(0)
   
   
   useEffect(() => {
@@ -59,20 +62,29 @@ export default function HeartRateMonitor() {
           <img src={heartIcon} alt="" height={64} />
           <span className={`text ${textMod}`}> {heartRate} </span>
         </div>
+        
         <h3>Battery {batteryLevel}%</h3>
         
-        <button onClick={disconnect}>Disconnect hRM</button>
+        <button onClick={disconnect}>Disconnect HRM</button>
         
-        <button onClick={E=>setUseCadence(!useCadence)}>
-          {useCadence? 'Stop': 'Start'} Cadence
-        </button>
+        <div>
+          <button onClick={E=>setWhichCadence(0)}>Off</button>
+          <button onClick={E=>setWhichCadence(1)}>Man</button>
+          <button onClick={E=>setWhichCadence(2)}>Auto</button>
+        </div>
       </>
     :
       <button onClick={connect}>Connect HRM</button>
     }
     
-    {connected && useCadence?
-      <Cadence value={heartRate} />
+    {connected && (whichCadence === 2)? <>
+      <AutoCadence value={heartRate} />
+    </>
+    : null }
+    
+    {connected && (whichCadence === 1)? <>
+      <ManualCadence />
+    </>
     : null }
   </div>
 }
