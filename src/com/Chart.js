@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react'
 import K from '../constants'
-import MultiChart from './MultiChart'
+import MultiChart from './MultiRechart'
 
 
 export default function Chart() {
