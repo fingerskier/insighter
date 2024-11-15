@@ -129,6 +129,14 @@ h1, h2 {
 }
 
 
+.selected {
+  background-color: rgb(85, 0, 255);
+  color: black;
+  font-weight: 900;
+  font-size: 1.1rem;
+}
+
+
 .settings input[type="range"] {
   min-width: 33vw;
 }

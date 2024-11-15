@@ -19,8 +19,6 @@ export default function HeartRateMonitor() {
   const [classes, setClasses] = useState('')
   const [data, setData] = useState([])
   const [textMod, setTextMod] = useState('')
-  const [useAutoCadence, setUseAutoCadence] = useState(false)
-  const [useManualCadence, setUseManualCadence] = useState(false)
   const [whichCadence, setWhichCadence] = useState(0)
   
   
@@ -68,9 +66,20 @@ export default function HeartRateMonitor() {
         <button onClick={disconnect}>Disconnect HRM</button>
         
         <div>
-          <button onClick={E=>setWhichCadence(0)}>Off</button>
-          <button onClick={E=>setWhichCadence(1)}>Man</button>
-          <button onClick={E=>setWhichCadence(2)}>Auto</button>
+          <button
+            className={whichCadence === 0? 'selected' : ''}
+            onClick={E=>setWhichCadence(0)}
+          >Off</button>
+          
+          <button
+            className={whichCadence === 1? 'selected' : ''}
+            onClick={E=>setWhichCadence(1)}
+          >Manual</button>
+          
+          <button
+            className={whichCadence === 2? 'selected' : ''}
+            onClick={E=>setWhichCadence(2)}
+          >Auto</button>
         </div>
       </>
     :

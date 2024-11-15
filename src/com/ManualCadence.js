@@ -1,92 +1,97 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import K from '../constants'
 import useLocalStorage from '../hook/useLocalStorage'
-import useTimer from '../hook/useTimer'
-import {clamp} from '../lib/helpers'
-import useBeep from '../hook/useBeep'
-
-
-const BPMtoMs = bpm=>Math.round(60000 / bpm)
+import useMetronome from '../hook/useMetronome'
 
 
 export default function ManualCadence() {
   const {
-    beep,
-    volume,
-    setVolume,
-    frequency,
-    setFrequency,
-  } = useBeep()
+    start, stop,
+    isPlaying,
+    bpm, setBPM,
+    volume, setVolume,
+    frequency, setFrequency,
+    setRhythm,
+  } = useMetronome(100); // Start at 100 BPM
   
-  const [BPM, setBPM] = useLocalStorage('manual-cadence-bpm', 100)
-  
-  const [heartRate, setHeartRate] = useState(0)
-  
-  const [ , setDuration] = useTimer(dT=>{
-    beep()
-    navigator.vibrate([66, 100])
-  })
-  
-  
-  const handleHeartRate = e => {
-    setHeartRate(+e.detail)
-  }
+  const [savedBPM, setSavedBPM] = useLocalStorage('manual-cadence-bpm', 100)
   
   
   useEffect(() => {
-    window.addEventListener(K.Event.HeartRate, handleHeartRate)
+    // Keep local storage in sync with current BPM
+    setSavedBPM(bpm)
+  }, [bpm])
+  
+  
+  useEffect(() => {
+    const handleHeartRate = e => {
+      setFrequency(4 * e.detail)
+    }
     
+    window.addEventListener(K.Event.HeartRate, handleHeartRate)
     return () => window.removeEventListener(K.Event.HeartRate, handleHeartRate)
   }, [])
   
   
   useEffect(() => {
-    setDuration(BPMtoMs(+BPM))
-  }, [BPM])
+    setRhythm({
+      emphasis: 4,
+      emphasized: {
+        frequency: frequency * 1.5,
+        gain: 2
+      },
+      normal: {
+        frequency: frequency,
+        gain: 1.0
+      }
+    })
+  }, [])
   
   
-  useEffect(() => {
-    setFrequency(1.5*heartRate)
-  }, [heartRate])
-  
-  
-  function BPMButton({value}) {
-    return <button onClick={E=>setBPM(BPM + +value)}>
-      {value}
-    </button>
+  function BPMButton({ value }) {
+    return (
+      <button onClick={() => setBPM(bpm + Number(value))}>
+        {value}
+      </button>
+    )
   }
   
   
-  return <div>
-    {BPM} BPM
-    
-    <br />
-    
-    <input
-      max={300}
-      min={30}
-      onChange={E=>setBPM(+E.target.value)}
-      type="range"
-      value={BPM}
-    />
-    
-    <br />
-    
-    <BPMButton value={-5} />
-    <BPMButton value={-1} />
-    <BPMButton value={+1} />
-    <BPMButton value={+5} />
-    
-    <br />
-    
-    Volume:
-    <br />
-    <input type="range"
-      min={0}
-      max={10}
-      step={0.1}
-      value={volume}
-      onChange={e=>setVolume(+e.target.value)}
-    />
-  </div>
+  return (
+    <div>
+      <div>
+        {Math.round(bpm)} BPM
+        <button onClick={() => isPlaying ? stop() : start()}>
+          {isPlaying ? 'Stop' : 'Start'}
+        </button>
+      </div>
+      
+      <input
+        max={300}
+        min={30}
+        onChange={e => setBPM(Number(e.target.value))}
+        type="range"
+        value={bpm}
+      />
+      
+      <div>
+        <BPMButton value={-5} />
+        <BPMButton value={-1} />
+        <BPMButton value={+1} />
+        <BPMButton value={+5} />
+      </div>
+      
+      <div>
+        Volume:
+        <input
+          type="range"
+          min={0}
+          max={10}
+          step={0.1}
+          value={volume}
+          onChange={e => setVolume(Number(e.target.value))}
+        />
+      </div>
+    </div>
+  )
 }
