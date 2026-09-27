@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "types": [
+      "vite/client",
+      "vite-plugin-pwa/client",
+      "web-bluetooth",
+      "w3c-generic-sensor",
+      "w3c-web-usb",
+      "w3c-web-serial",
+      "w3c-web-hid",
+      "w3c-web-nfc"
+    ]
+  },
+  "include": ["src"]
+}
