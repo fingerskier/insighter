@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'icons/*.png'],
+      includeAssets: ['favicon.ico', 'logo.svg', 'icons/*.png'],
       manifest: {
         name: 'Insighter — device sensor explorer',
         short_name: 'Insighter',
