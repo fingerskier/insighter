@@ -36,8 +36,10 @@ npm install
 npm run dev        # http://localhost:5173/insighter/ (localhost counts as a secure context)
 npm test           # unit tests for the math, step detection and BLE parsing
 npm run build      # typecheck + production build with service worker
-npm run deploy     # publish dist/ to the gh-pages branch
+npm run deploy     # manual publish of dist/ to the gh-pages branch
 ```
+
+Pushes to `main` deploy automatically: `.github/workflows/pages.yml` tests, builds and publishes `dist/` to the `gh-pages` branch, which GitHub Pages serves. Pull requests run the same tests and build without deploying.
 
 To try phone sensors against the dev server you need HTTPS. Use `npx vite --host` behind a tunnel, or Chrome's remote debugging port forwarding (`chrome://inspect` → Port forwarding), which serves it as `localhost` on the phone.
 
