@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'icons/*.png'],
+      includeAssets: ['favicon.ico', 'logo.svg', 'icons/*.png'],
       manifest: {
         name: 'Insighter — device sensor explorer',
         short_name: 'Insighter',
@@ -18,10 +18,12 @@ export default defineConfig({
         display: 'standalone',
         start_url: '.',
         icons: [
-          { src: 'icons/insighter64.png', sizes: '64x64', type: 'image/png' },
-          { src: 'icons/insighter128.png', sizes: '128x128', type: 'image/png' },
-          { src: 'icons/insighter256.png', sizes: '256x256', type: 'image/png' },
-          { src: 'icons/insighter512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: 'icons/logo-64.png', sizes: '64x64', type: 'image/png' },
+          { src: 'icons/logo-128.png', sizes: '128x128', type: 'image/png' },
+          { src: 'icons/logo-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'icons/logo-256.png', sizes: '256x256', type: 'image/png' },
+          { src: 'icons/logo-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: 'icons/logo-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
       },
     }),

@@ -32,7 +32,7 @@ export default function App() {
     <HideUnavailableContext.Provider value={hideUnavailable}>
       <header className="masthead">
         <div className="brand">
-          <img src={`${import.meta.env.BASE_URL}icons/insighter128.png`} alt="" width={48} height={48} />
+          <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="" width={48} height={48} />
           <div>
             <h1>Insighter</h1>
             <p className="tagline">What can this browser sense? Every device-facing Web API, detected and visualized live.</p>
