@@ -1,70 +1,58 @@
-# Getting Started with Create React App
+# Insighter
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**What can this browser sense?** Insighter detects every device-facing Web API your browser exposes and visualizes each one live: motion, orientation, light, location, sound, camera, power, network, input and peripherals.
 
-## Available Scripts
+Live: <https://fingerskier.github.io/insighter>
 
-In the project directory, you can run:
+Every API gets a card that either works or explains why it can't:
 
-### `npm start`
+| Status | Meaning |
+|---|---|
+| ● Available | Exposed and allowed here. Tap **Start** to begin. |
+| ○ Not in this browser | This engine doesn't implement it. The card says which browsers do. |
+| ⚿ Needs HTTPS | The API only exists in secure contexts. |
+| ⊘ Blocked by policy | A `Permissions-Policy` disables it for this page. |
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Nothing leaves the device. Every reading is processed in the tab.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## What's covered
 
-### `npm test`
+| Category | APIs |
+|---|---|
+| Motion & orientation | DeviceOrientation/DeviceMotion events (incl. iOS permission flow), Accelerometer, LinearAcceleration, Gravity, Gyroscope, Magnetometer, Absolute/Relative orientation. 3D device model, compass, spirit level and live charts. |
+| Environment | Ambient light, Compute Pressure, Ambient temperature (a known negative for detection) |
+| Location | Geolocation: fix, accuracy, speed, heading, distance and a north-up track |
+| Camera & microphone | Mic level, spectrum and pitch (Web Audio). Camera preview, track settings, torch, and scene brightness. Media-device enumeration. |
+| Device & system | Pointer/pen/touch (pressure, tilt, twist), screen & media features, battery, network, gamepad (sticks, buttons, rumble), vibration, wake lock, idle detection, page lifecycle, hardware/GPU/client hints |
+| Peripherals | Web Bluetooth GATT explorer, Web Serial terminal, WebUSB descriptors, WebHID input reports, Web MIDI, Web NFC |
+| Showcase | BLE heart-rate monitor (BPM, RR, zone haptics). Web Audio metronome that can steer toward a target heart rate or lock to your step cadence. Step & cadence tracker. |
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Most sensors need a phone. Desktop browsers usually expose the motion APIs without hardware behind them, and the cards say so.
 
-### `npm run build`
+## Development
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```sh
+npm install
+npm run dev        # http://localhost:5173/insighter/ (localhost counts as a secure context)
+npm test           # unit tests for the math, step detection and BLE parsing
+npm run build      # typecheck + production build with service worker
+npm run deploy     # manual publish of dist/ to the gh-pages branch
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Pushes to `main` deploy automatically: `.github/workflows/pages.yml` tests, builds and publishes `dist/` to the `gh-pages` branch, which GitHub Pages serves. Pull requests run the same tests and build without deploying.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+To try phone sensors against the dev server you need HTTPS. Use `npx vite --host` behind a tunnel, or Chrome's remote debugging port forwarding (`chrome://inspect` → Port forwarding), which serves it as `localhost` on the phone.
 
-### `npm run eject`
+Stack: Vite, React 19, TypeScript and vite-plugin-pwa (installable and offline-capable). There are no runtime dependencies beyond React.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Layout
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```
+src/lib/support.ts   API registry + availability detection (the capability map)
+src/lib/sources.ts   subscribe functions for every streaming source
+src/hooks/useStream  start/stop, errors, frame-throttled state, ring-buffer series
+src/components/      Panel card, stats, canvas time-series, compass, 3D model, …
+src/panels/          one file per category
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+To add an API, register it in `APIS` in `support.ts`, write a panel wrapped in `<Panel id="…">`, and add the panel to its category in `App.tsx`.
